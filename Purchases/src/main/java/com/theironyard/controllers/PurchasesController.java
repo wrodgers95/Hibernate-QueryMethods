@@ -5,6 +5,8 @@ import com.theironyard.entities.Purchase;
 import com.theironyard.repositories.CustomerRepository;
 import com.theironyard.repositories.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Scanner;
 
 import static java.lang.Integer.valueOf;
@@ -26,18 +27,24 @@ public class PurchasesController {
     @Autowired
     PurchaseRepository purchases;
 
-    @RequestMapping (path = "/", method = RequestMethod.GET)
-    public String home (Model model, String category) {
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home(Model model, String category, Integer page) {
+        page = (page == null) ? 0 : page;
 
-        List<Purchase> purchasesList;
+        PageRequest pr = new PageRequest(page, 10);
+        Page<Purchase> p;
 
         if (category != null) {
-            purchasesList = purchases.findByCategory(category);
+            p = purchases.findByCategory(pr, category);
         }
-        else { purchasesList = (List<Purchase>) purchases.findAll();
+        else {
+            p = purchases.findAll(pr);
         }
 
-        model.addAttribute("purchases", purchasesList);
+        model.addAttribute("category", category);
+        model.addAttribute("purchases", p);
+        model.addAttribute("nextPage", page + 1);
+        model.addAttribute("showNext", p.hasNext());
         return "home";
     }
 

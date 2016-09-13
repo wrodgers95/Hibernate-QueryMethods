@@ -7,7 +7,6 @@
 <a href="/">All</a>
 <a href="/?category=Alcohol">Alcohol</a>
 <a href="/?category=Furniture">Furniture</a>
-<a href="/?category=Food">Food</a>
 <a href="/?category=Toiletries">Toiletries</a>
 <a href="/?category=Shoes">Shoes</a>
 <a href="/?category=Jewelry">Jewelry</a>
@@ -35,5 +34,9 @@
     </tr>
     {{/purchases}}
 </table>
+
+{{#showNext}}
+<a href="/?page={{nextPage}}{{#category}}&category={{.}}{{/category}}">Next</a>
+{{/showNext}}
 </body>
 </html>
